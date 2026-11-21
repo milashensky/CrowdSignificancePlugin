@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Components/ActorComponent.h"
 #include "Subsystems/WorldSubsystem.h"
 #include "MovementSignificanceSubsystem.generated.h"
 
@@ -21,23 +22,23 @@ struct FSignificanceTierSettings
     GENERATED_BODY()
 
     // CharacterMovement tick interval, sec. 0 = every frame
-    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement Significance")
     float MovementTickInterval = 0.f;
 
     // bigger step = fewer CMC sub-iterations when ticking with a large DeltaTime
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = "0.01", ClampMax = "0.5"))
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = "0.01", ClampMax = "0.5"), Category = "Movement Significance")
     float MaxSimulationTimeStep = 0.05f;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement Significance")
     bool isUseNavWalking = false;
-    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement Significance")
     bool isSweepWhileNavWalking = true;
-    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement Significance")
     bool isUseAvoidance = true;
     // navigation invoker settings for this tier. 0 = invoker component's own values
-    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement Significance")
     float InvokerGenerationRadius = 0.f;
-    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement Significance")
     float InvokerRemovalRadius = 0.f;
 };
 
@@ -55,32 +56,32 @@ class CROWDSIGNIFICANCEPLUGIN_API UMovementSignificanceComponent : public UActor
 public:
 	// Sets default values for this component's properties
 	UMovementSignificanceComponent();
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Significance")
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement Significance")
     float NearDistanceUpperBound = 3500.f;
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Significance")
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement Significance")
     float MidDistanceUpperBound = 6000.f;
 
     // tier boundary is pushed this far outward while inside it, so tiers don't flicker
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Significance")
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement Significance")
     float Hysteresis = 500.f;
     // not rendered for this long = hidden, sec
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Significance")
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement Significance")
     float HiddenGraceTime = 0.5f;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Significance")
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement Significance")
     FSignificanceTierSettings NearSettings;
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Significance")
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement Significance")
     FSignificanceTierSettings MidSettings;
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Significance")
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement Significance")
     FSignificanceTierSettings FarSettings;
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Significance")
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement Significance")
     FSignificanceTierSettings HiddenSettings;
 
     // a hook for BP-side throttling
-    UPROPERTY(BlueprintAssignable, Category = "Significance")
+    UPROPERTY(BlueprintAssignable, Category = "Movement Significance")
     FOnCrowdSignificanceChanged OnSignificanceChanged;
 
-    UFUNCTION(BlueprintPure, Category = "Significance")
+    UFUNCTION(BlueprintPure, Category = "Movement Significance")
     ECrowdSignificance GetSignificance() const { return Tier; }
 
     const FSignificanceTierSettings& GetSettings(ECrowdSignificance InTier) const;
