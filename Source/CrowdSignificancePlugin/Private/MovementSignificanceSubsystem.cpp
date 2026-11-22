@@ -40,13 +40,15 @@ UMovementSignificanceComponent::UMovementSignificanceComponent() {
 
 void UMovementSignificanceComponent::BeginPlay() {
     Super::BeginPlay();
-    if (UMovementSignificanceSubsystem* Subsystem = GetWorld()->GetSubsystem<UMovementSignificanceSubsystem>()) {
-        Subsystem->Register(this);
-    }
     if (const UNavigationInvokerComponent* Invoker = GetOwner()->FindComponentByClass<UNavigationInvokerComponent>()) {
         isNavInvoker = true;
         DefaultInvokerGenerationRadius = Invoker->GetGenerationRadius();
         DefaultInvokerRemovalRadius = Invoker->GetRemovalRadius();
+    }
+    if (const ACharacter* Character = GetOwner<ACharacter>()) {
+        if (const USkeletalMeshComponent* Mesh = Character->GetMesh()) {
+            DefaultMeshTickInterval = Mesh->GetComponentTickInterval();
+        }
     }
     if (UMovementSignificanceSubsystem* Subsystem = GetWorld()->GetSubsystem<UMovementSignificanceSubsystem>()) {
         Subsystem->Register(this);
@@ -117,6 +119,11 @@ void UMovementSignificanceComponent::ApplyTier(ECrowdSignificance NewTier) {
         Movement->MaxSimulationTimeStep = Settings.MaxSimulationTimeStep;
         Movement->bSweepWhileNavWalking = Settings.isSweepWhileNavWalking;
         Movement->SetAvoidanceEnabled(Settings.isUseAvoidance);
+    }
+    // set in the same frame as the movement interval, so both cool down together and tick on the same frames.
+    // the mesh already ticks after movement (ACharacter prerequisite)
+    if (USkeletalMeshComponent* Mesh = Character ? Character->GetMesh() : nullptr) {
+        Mesh->SetComponentTickInterval(Settings.isSyncMeshTickInterval ? Settings.MovementTickInterval : DefaultMeshTickInterval);
     }
     if (isNavInvoker) {
         ApplyInvokerSettings(Settings);

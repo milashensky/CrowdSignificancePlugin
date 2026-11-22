@@ -25,6 +25,11 @@ struct FSignificanceTierSettings
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement Significance")
     float MovementTickInterval = 0.f;
 
+    // tick the mesh at MovementTickInterval too, so animation only runs on frames movement did.
+    // off = mesh keeps its own tick interval
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement Significance")
+    bool isSyncMeshTickInterval = true;
+
     // bigger step = fewer CMC sub-iterations when ticking with a large DeltaTime
     UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = "0.01", ClampMax = "0.5"), Category = "Movement Significance")
     float MaxSimulationTimeStep = 0.05f;
@@ -103,6 +108,8 @@ protected:
     bool isNavInvoker = false;
     float DefaultInvokerGenerationRadius = 0.f;
     float DefaultInvokerRemovalRadius = 0.f;
+
+    float DefaultMeshTickInterval = 0.f;
 };
 
 /**
